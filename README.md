@@ -5,3 +5,5 @@ Lors de l'execution de l'interface il est affiché 3 onglets:
 - Livreurs :
   Affiche la liste des livreurs avec leurs statut commande actuelle et trajet.
   Permet aussi d'ajouter un livreur
+- Réseau Routier:
+  Affiche le réseau routier pour les livraison avec un entrepot, des points de livraison et permet d'ajouter un point de livraison et une route
