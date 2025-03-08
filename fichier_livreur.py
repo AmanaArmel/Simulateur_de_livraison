@@ -4,6 +4,8 @@ class Livreur:
         self.id_livreur = id_livreur
         self.statut = "Disponible"
         self.commande_actuelle = None
+        self.distance_parcourue = 0  # Distance initiale
+
 
     def __str__(self):
         return f"Livreur {self.id_livreur} - {self.statut}"
@@ -12,6 +14,7 @@ class Livreur:
         """Attribue une commande au livreur et met Ã  jour son statut."""
         self.commande_actuelle = commande
         commande.statut = "En livraison"
+        self.distance_parcourue = 0  # Réinitialiser la distance
         self.statut = "En livraison"
         print(f"ðŸšš Livreur {self.id_livreur} prend la {commande}")
 
@@ -22,3 +25,4 @@ class Livreur:
             print(f"âœ… {self.commande_actuelle} a Ã©tÃ© livrÃ©e par le livreur {self.id_livreur}")
             self.commande_actuelle = None
             self.statut = "Disponible"
+            self.distance_parcourue = 0  # Réinitialiser la distance après livraison

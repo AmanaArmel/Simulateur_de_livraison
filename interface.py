@@ -119,15 +119,21 @@ class InterfaceApplication:
         self.frame_table_livreur = ttk.Frame(self.frame_list_livreur)
         self.frame_table_livreur.pack()
 
-        self.table_livreurs = ttk.Treeview(self.frame_table_livreur, columns=("ID", "Statut"), show="headings")
+        self.table_livreurs = ttk.Treeview(self.frame_table_livreur, columns=("ID", "Statut", "Commande", "Distance"), show="headings")
         self.table_livreurs.heading("ID", text="ID")
         self.table_livreurs.heading("Statut", text="Statut")
+        self.table_livreurs.heading("Commande", text="Commande")
+        self.table_livreurs.heading("Distance", text="Distance (km)")
+
         self.table_livreurs.column("ID", width=100, anchor="center")
         self.table_livreurs.column("Statut", width=200, anchor="w")
+        self.table_livreurs.column("Commande", width=120)
+        self.table_livreurs.column("Distance", width=120)
+
         self.table_livreurs.pack()
 
-        self.bouton_attribuer_commande = ttk.Button(self.frame_list_livreur, text="Attribuer Commande",command=self.attribuer_commande)
-        self.bouton_attribuer_commande.pack(pady=10)
+        # self.bouton_attribuer_commande = ttk.Button(self.frame_list_livreur, text="Attribuer Commande",command=self.attribuer_commande)
+        # self.bouton_attribuer_commande.pack(pady=10)
 
         # Onglet Réseau Routier
         self.frame_reseau = ttk.Frame(self.notebook)
@@ -178,6 +184,12 @@ class InterfaceApplication:
 
         self.mise_a_jour_affichage()
 
+        self.mise_a_jour_graphe()
+
+
+        self.rafraichir_interface()
+
+
     def ajouter_commande(self):
         id_commande = self.entry_id_commande.get()
         adresse = self.entry_adresse.get()
@@ -196,14 +208,14 @@ class InterfaceApplication:
     def ajouter_lieu(self):
         lieu = self.entry_lieu.get()
         self.reseau_routier.ajouter_lieu(lieu)
-        self.mise_a_jour_affichage()
+        self.mise_a_jour_graphe()
 
     def ajouter_route(self):
         lieu1 = self.entry_route1.get()
         lieu2 = self.entry_route2.get()
         distance = int(self.entry_distance.get())
         self.reseau_routier.ajouter_route(lieu1, lieu2, distance)
-        self.mise_a_jour_affichage()
+        self.mise_a_jour_graphe()
 
     def mise_a_jour_affichage(self):
         #self.liste_commandes.delete(0, tk.END)
@@ -216,14 +228,29 @@ class InterfaceApplication:
         #self.liste_livreurs.delete(0, tk.END)
         for row in self.table_livreurs.get_children():
             self.table_livreurs.delete(row)
-        for livreur in self.gestion_livreurs.livreurs:
-            if livreur.commande_actuelle:
-                info = f"{livreur} - {livreur.commande_actuelle.id_commande} ({livreur.commande_actuelle.adresse})"
-            else:
-                info = str(livreur)
-            #self.liste_livreurs.insert(tk.END, info)
-            self.table_livreurs.insert("", "end", values=(livreur.id_livreur, livreur.statut))
 
+            # Ajouter les nouvelles données
+        for livreur in self.gestion_livreurs.livreurs:
+            id_commande = livreur.commande_actuelle.id_commande if livreur.commande_actuelle else "Aucune"
+            distance = livreur.distance_parcourue if hasattr(livreur, "distance_parcourue") else "0"
+
+            self.table_livreurs.insert("", "end", values=(livreur.id_livreur, livreur.statut, id_commande, distance))
+
+
+        # for widget in self.canvas_frame.winfo_children():
+        #     widget.destroy()
+        #
+        # fig, ax = plt.subplots(figsize=(5, 4))
+        # pos = nx.spring_layout(self.reseau_routier.graphe)
+        # nx.draw(self.reseau_routier.graphe, pos, with_labels=True, node_color='skyblue', edge_color='gray', ax=ax)
+        # labels = nx.get_edge_attributes(self.reseau_routier.graphe, 'weight')
+        # nx.draw_networkx_edge_labels(self.reseau_routier.graphe, pos, edge_labels=labels, ax=ax)
+        #
+        # canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
+        # canvas.get_tk_widget().pack()
+        # canvas.draw()
+
+    def mise_a_jour_graphe(self):
         for widget in self.canvas_frame.winfo_children():
             widget.destroy()
 
@@ -243,3 +270,9 @@ class InterfaceApplication:
             self.gestion_livreurs.ajouter_livreur(id_livreur)
             self.mise_a_jour_affichage()
 
+    def rafraichir_interface(self):
+        self.mise_a_jour_affichage()
+
+        self.attribuer_commande()
+
+        self.root.after(1000, self.rafraichir_interface)  # Rafraîchir toutes les 3 secondes

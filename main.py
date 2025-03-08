@@ -29,6 +29,7 @@ gestion_livreurs.ajouter_livreur(1)
 gestion_livreurs.ajouter_livreur(2)
 gestion_commandes.ajouter_commande(1, "A")
 gestion_commandes.ajouter_commande(2, "C")
+gestion_commandes.ajouter_commande(3, "B")
 
 # Attribution et animation des trajets
 #gestion_livreurs.attribuer_commande(gestion_commandes)
