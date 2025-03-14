@@ -27,10 +27,6 @@ class GestionLivreurs:
 
             livreursDisponibles = self.get_livreurs_disponibles()
 
-            # if len(self.livreurs) == 0:
-            #     print("❌ Aucun livreur disponible.")
-            #     return
-
             if not livreursDisponibles:
                 print("❌ Aucun livreur disponible.")
                 return
@@ -46,10 +42,7 @@ class GestionLivreurs:
                         livreur_disponible.prendre_commande(commande)
                         print(
                             f"🗺 Itinéraire du livreur {livreur_disponible.id_livreur} : {' → '.join(chemin)} (Distance : {distance} km)")
-                        #self.reseau_routier.animer_deplacement(chemin)
-
-                        # Livraison terminée, le livreur redevient disponible
-                        #livreur_disponible.livrer_commande()
+                        
 
                         # Démarrer un thread pour simuler le temps de livraison
                         thread = threading.Thread(target=self.simuler_livraison,
